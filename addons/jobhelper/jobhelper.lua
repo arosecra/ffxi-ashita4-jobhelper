@@ -1,5 +1,5 @@
 
-addon.name      = 'multiboxhelper';
+addon.name      = 'jobhelper';
 addon.author    = 'arosecra';
 addon.version   = '1.0';
 addon.desc      = 'TBD';
