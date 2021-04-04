@@ -5,30 +5,65 @@ addon.version   = '1.0';
 addon.desc      = 'TBD';
 addon.link      = '';
 
+require('common')
 
-ashita.events.register('load', 'multiboxhelper_load_cb', function ()
-    print("[multiboxhelper] 'load' event was called.");
+local modules = T{}
+
+local prefixes = T{
+    ['nuke'] = require('ma/nuke'),
+    ['brd'] = require('job/brd'),
+    ['cor'] = require('job/cor'),
+    ['geo'] = require('job/geo'),
+    ['pup'] = require('job/pup'),
+    ['sch'] = require('job/sch')
+}
+
+local runtime_config = {};
+
+ashita.events.register('load', 'jobhelper_load_cb', function ()
+
+    prefixes:each(function(value)
+        modules:append(value);
+    end);
+
+
+    modules:each(function(module)
+        if module.init_config ~= nil then
+            module.init_config(runtime_config);
+        end
+    end);
 end);
 
-ashita.events.register('command', 'multiboxhelper_command_cb', function (e)
-    if (not e.command:startswith('/multiboxhelper') and not e.command:startswith('/mbh')) then
+ashita.events.register('command', 'jobhelper_command_cb', function (e)
+    if (not e.command:startswith('/jobhelper') and not e.command:startswith('/jh')) then
 		return;
     end
-    print("[multiboxhelper] Blocking '/mbh' command!");
     e.blocked = true;
+
+    local args = e.command:argsquoted();
+    local module = prefixes[args[2]];
+    if module == nil then
+        print('Module ' .. args[2] .. ' not found')
+    else
+        module.command(runtime_config, args);
+    end
+
 end);
 
-ashita.events.register('packet_in', 'packetpump_inc_action_0x28_packet_in_callback1', function (e)
+ashita.events.register('packet_in', 'jobhelper_in_callback1', function (e)
     if (e.id == 0x76) then
 	
 	elseif (e.id == 0x0D) then
 	
 	elseif (e.id == 0x28) then
-		local action = parser.parse_action(e.data);
 		
     end
 end);
 
-ashita.events.register('d3d_present', 'multiboxhelper_present_cb', function ()
-
+ashita.events.register('d3d_present', 'jobhelper_present_cb', function ()
+    modules:each(function(module)
+        if module.render ~= nil then
+            module.render(runtime_config);
+        end
+    end);
 end);
