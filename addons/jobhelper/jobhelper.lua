@@ -10,11 +10,16 @@ require('common')
 local modules = T{}
 
 local prefixes = T{
+    --abilities
+    ['ws'] = require('ability/ws'),
+    --magic
     ['nuke'] = require('ma/nuke'),
+    --job
     ['brd'] = require('job/brd'),
     ['cor'] = require('job/cor'),
     ['geo'] = require('job/geo'),
     ['pup'] = require('job/pup'),
+    ['sam'] = require('job/sam'),
     ['sch'] = require('job/sch')
 }
 
