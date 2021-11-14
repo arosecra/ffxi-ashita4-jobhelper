@@ -51,7 +51,7 @@ ashita.events.register('command', 'jobhelper_command_cb', function (e)
         print('Module ' .. args[2] .. ' not found')
     else
         module.command(runtime_config, args);
-    end
+    end 
 
 end);
 

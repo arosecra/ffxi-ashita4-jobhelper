@@ -13,8 +13,9 @@ cor.command = function(config, args)
         local roll = args[5];
         config.cor.rolls[index] = roll;
 	elseif (args[3] == 'roll') then
+		print(config.cor.rolls[args[4]])
         if config.cor.rolls[args[4]] ~= nil then
-		    AshitaCore:GetChatManager():QueueCommand("/ja \"" .. config.cor.rolls[args[4]] .. "\" <me>", 1)
+		    AshitaCore:GetChatManager():QueueCommand(1, "/ja " .. config.cor.rolls[args[4]] .. " <me>")
         end
 	end
 end
