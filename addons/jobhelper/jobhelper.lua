@@ -6,6 +6,7 @@ addon.desc      = 'TBD';
 addon.link      = '';
 
 require('common')
+local status_effect_packet = require('org_github_arosecra/packets/status_effect')
 
 local modules = T{}
 
@@ -13,6 +14,8 @@ local prefixes = T{
     --abilities
     ['ws'] = require('ability/ws'),
     --magic
+	['cure'] = require('ma/cure'),
+	['cleanse'] = require('ma/cleanse'),
     ['nuke'] = require('ma/nuke'),
     --job
     ['brd'] = require('job/brd'),
@@ -20,7 +23,8 @@ local prefixes = T{
     ['geo'] = require('job/geo'),
     ['pup'] = require('job/pup'),
     ['sam'] = require('job/sam'),
-    ['sch'] = require('job/sch')
+    ['sch'] = require('job/sch'),
+    ['whm'] = require('job/whm')
 }
 
 local runtime_config = {};
@@ -57,7 +61,8 @@ end);
 
 ashita.events.register('packet_in', 'jobhelper_in_callback1', function (e)
     if (e.id == 0x76) then
-	
+		runtime_config.party_status_effects = status_effect_packet.parse(e.data)
+		--print('parsed 0x76')
 	elseif (e.id == 0x0D) then
 	
 	elseif (e.id == 0x28) then
