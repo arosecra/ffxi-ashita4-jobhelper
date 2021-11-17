@@ -6,6 +6,10 @@ brd.init_config = function(config)
 	}
 end
 
+brd.get_config = function(config)
+	return config.brd
+end
+
 brd.command = function(config, args)
 	if (args[3] == 'setsong') then
         local index = args[4];
@@ -41,6 +45,10 @@ brd.command = function(config, args)
 end
 
 brd.render = function(config)
+end
+
+brd.tic = function(config)
+
 end
 
 return brd

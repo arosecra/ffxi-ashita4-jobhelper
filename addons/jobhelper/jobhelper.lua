@@ -13,6 +13,10 @@ local modules = T{}
 local prefixes = T{
     --abilities
     ['ws'] = require('ability/ws'),
+	--auto
+	['emergency_cure'] = require('auto/emergency_cure'),
+	['maneuver'] = require('auto/maneuver'),
+	['pld_enmity'] = require('auto/pld_enmity'),
     --magic
 	['cure'] = require('ma/cure'),
 	['cleanse'] = require('ma/cleanse'),
@@ -21,6 +25,7 @@ local prefixes = T{
     ['brd'] = require('job/brd'),
     ['cor'] = require('job/cor'),
     ['geo'] = require('job/geo'),
+    ['pld'] = require('job/pld'),
     ['pup'] = require('job/pup'),
     ['sam'] = require('job/sam'),
     ['sch'] = require('job/sch'),
@@ -31,14 +36,20 @@ local runtime_config = {};
 
 ashita.events.register('load', 'jobhelper_load_cb', function ()
 
+	runtime_config.next_tic_time = 0
+				
     prefixes:each(function(value)
         modules:append(value);
     end);
 
-
     modules:each(function(module)
         if module.init_config ~= nil then
             module.init_config(runtime_config);
+			local config = module.get_config(runtime_config);
+			if config ~= nil then
+				config.next_exec_time = 0
+				config.engaged = "false"
+			end
         end
     end);
 end);
@@ -54,7 +65,11 @@ ashita.events.register('command', 'jobhelper_command_cb', function (e)
     if module == nil then
         print('Module ' .. args[2] .. ' not found')
     else
-        module.command(runtime_config, args);
+		if #args > 2 and args[3] == 'setengaged' then
+			module.get_config(runtime_config).engaged = args[4]
+		else
+			module.command(runtime_config, args);
+		end
     end 
 
 end);
@@ -75,5 +90,20 @@ ashita.events.register('d3d_present', 'jobhelper_present_cb', function ()
         if module.render ~= nil then
             module.render(runtime_config);
         end
+		
+		local module_config = module.get_config(runtime_config);
+		if module_config.engaged ~= nil and 
+		   module_config.engaged == "true" then
+			if runtime_config.next_tic_time < os.time() then
+				if module_config.next_exec_time ~= nil and 
+				   module_config.next_exec_time < os.time() and 
+				   module.tic ~= nil then
+					local delay = module.tic(runtime_config)
+					module_config.next_exec_time = os.time() + delay
+				end				
+				
+				runtime_config.next_tic_time = os.time() + 1
+			end		
+		end
     end);
 end);

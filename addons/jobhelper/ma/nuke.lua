@@ -60,6 +60,10 @@ nuke.init_config = function(config)
 	}
 end
 
+nuke.get_config = function(config)
+	return config.nuke;
+end
+
 nuke.command = function(config, args)
 	if (args[3] == 'setelement') then
 		config.nuke.element = args[4]
@@ -69,6 +73,10 @@ nuke.command = function(config, args)
 end
 
 nuke.render = function(config)
+
+end
+
+nuke.tic = function(config)
 
 end
 

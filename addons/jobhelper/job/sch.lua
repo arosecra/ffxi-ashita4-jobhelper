@@ -22,6 +22,10 @@ sch.init_config = function(config)
     }
 end
 
+sch.get_config = function(config)
+	return config.sch
+end
+
 sch.command = function(config, args)
 	if (args[3] == 'setslfsc') then
 		config.sch['slfsc'] = args[4]
@@ -71,6 +75,12 @@ sch.slfsc_step6 = function(skillchain_info)
 	AshitaCore:GetChatManager():QueueCommand(1, "/ma " .. skillchain_info.Spells[2] .. " <t>")
 end
 
+sch.render = function(config)
 
+end
+
+sch.tic = function(config)
+
+end
 
 return sch

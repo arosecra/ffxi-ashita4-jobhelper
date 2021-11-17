@@ -7,6 +7,10 @@ cor.init_config = function(config)
 	}
 end
 
+cor.get_config = function(config)
+	return config.cor
+end
+
 cor.command = function(config, args)
 	if (args[3] == 'setroll') then
         local index = args[4];
@@ -21,6 +25,9 @@ cor.command = function(config, args)
 end
 
 cor.render = function(config)
+end
+
+cor.tic = function(config)
 end
 
 return cor

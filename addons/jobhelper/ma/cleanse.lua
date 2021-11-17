@@ -42,11 +42,19 @@ cleanse.init_config = function(config)
 	}
 end
 
+cleanse.get_config = function(config)
+	return config.cleanse;
+end
+
 cleanse.command = function(config, args)
 	cleanse.run_cleanse(config)
 end
 
 cleanse.render = function(config)
+
+end
+
+cleanse.tic = function(config)
 
 end
 

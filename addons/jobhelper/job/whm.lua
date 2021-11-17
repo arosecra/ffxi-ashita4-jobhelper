@@ -8,6 +8,10 @@ whm.init_config = function(config)
 	}
 end
 
+whm.get_config = function(config)
+	return config.whm;
+end
+
 whm.command = function(config, args)
 	if (args[3] == 'setbarelement') then
 		config.whm.barelement = args[4]
@@ -25,6 +29,9 @@ whm.command = function(config, args)
 end
 
 whm.render = function(config)
+end
+
+whm.tic = function(config)
 end
 
 return whm

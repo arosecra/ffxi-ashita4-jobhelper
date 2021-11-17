@@ -13,11 +13,12 @@ pup.maneuver_elements = {
 
 pup.init_config = function(config)
 	config.pup = {
-		maneuvers = {},
-		appliedmaneuvers = false,
-		autorenewmaneuver = "true",
-		lastautorenewtime = 0
+		maneuvers = {}
 	}
+end
+
+pup.get_config = function(config)
+	return config.pup;
 end
 
 pup.command = function(config, args)
@@ -25,39 +26,31 @@ pup.command = function(config, args)
         local index = args[4];
         local maneuver = args[5];
         config.pup.maneuvers[index] = maneuver;
-	elseif (args[3] == 'maneuver') then
-		pup.run_maneuver(config)
-	elseif (args[3] == 'autorenewmaneuver') then
-		config.pup.autorenewmaneuver = args[4];
-		if (config.pup.autorenewmaneuver == 'false') then
-			config.pup.appliedmaneuvers = false
-		end
 	end
 end
 
 pup.render = function(config)
+end
+
+pup.tic = function(config)
 	local player = AshitaCore:GetMemoryManager():GetPlayer();
     local playerEntity = GetPlayerEntity();
     if (player == nil or playerEntity == nil) then
-        return;
+        return 1;
+    end
+	
+    local pet = GetEntity(playerEntity.PetTargetIndex);
+    if (pet == nil) then
+        return 1;
     end
 
 	local mainjob = jobs[player:GetMainJob()]
 
 	if mainjob == 'Puppetmaster' then
-		-- do pup stuff here
-		if config.pup.appliedmaneuvers and 
-			config.pup.autorenewmaneuver == "true" and
-			os.time() > config.pup.lastautorenewtime + 12
-			then
-			if pup.run_maneuver(config) then
-				config.pup.lastautorenewtime = os.time()
-			end
-		end
+		pup.run_maneuver(config)
 	end
+	return 12;
 end
-
-
 
 
 pup.maneuver = function(config, maneuver_count, maneuver)

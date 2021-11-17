@@ -33,6 +33,10 @@ geo.init_config = function(config)
 	config.geo = {}
 end
 
+geo.get_config = function(config)
+	return config.geo
+end
+
 geo.command = function(config, args)
 	if (args[3] == 'setbubble') then
 		config.geo['bubble'] = args[4]
@@ -49,6 +53,14 @@ geo.command = function(config, args)
 		    AshitaCore:GetChatManager():QueueCommand(1, "/ma \"" .. config.geo['luopan'] .. "\" " .. geo.spelltargets[config.geo['luopan']])
         end
 	end
+end
+
+geo.render = function(config)
+
+end
+
+geo.tic = function(config)
+
 end
 
 return geo;

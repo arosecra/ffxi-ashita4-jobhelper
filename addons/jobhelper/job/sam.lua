@@ -7,6 +7,9 @@ sam.init_config = function(config)
 	}
 end
 
+sam.get_config = function(config)
+	return config.sam
+end
 
 sam.command = function(config, args)
 	if (args[3] == 'engage') then
@@ -22,6 +25,8 @@ sam.command = function(config, args)
 		end
 	end
 end
+
+
 
 sam.render = function(config)
 	local player = AshitaCore:GetMemoryManager():GetPlayer();
@@ -41,5 +46,8 @@ sam.render = function(config)
 	end
 end
 
+sam.tic = function(config)
+
+end
 
 return sam

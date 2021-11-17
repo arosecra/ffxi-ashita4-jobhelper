@@ -7,6 +7,10 @@ cure.init_config = function(config)
 	}
 end
 
+cure.get_config = function(config)
+	return config.cure
+end
+
 cure.command = function(config, args)
 	if (args[3] == 'cure') then
 		cure.run_cure(100, 250, 400, 800, 1000, 1300, args)
@@ -17,9 +21,14 @@ cure.command = function(config, args)
 	end
 end
 
-cure.render = function(config)
-
+cure.tic = function(config)
 end
+
+cure.render = function(config)
+	--check for emergency cure
+	
+end
+
 cure.run_cure = function(cure1, cure2, cure3, cure4, cure5, cure6, args)
 	local lowestHpp = 100;
 	local lowestHp = 0;
