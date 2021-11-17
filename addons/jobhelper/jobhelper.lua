@@ -62,7 +62,11 @@ ashita.events.register('command', 'jobhelper_command_cb', function (e)
 
     local args = e.command:argsquoted();
     local module = prefixes[args[2]];
-    if module == nil then
+    if args[2] == 'printzone' then
+		local party     = AshitaCore:GetMemoryManager():GetParty();
+		local zone = AshitaCore:GetResourceManager():GetString('zones', party:GetMemberZone(0))
+		print(zone)
+	elseif module == nil then
         print('Module ' .. args[2] .. ' not found')
     else
 		if #args > 2 and args[3] == 'setengaged' then
@@ -86,6 +90,46 @@ ashita.events.register('packet_in', 'jobhelper_in_callback1', function (e)
 end);
 
 ashita.events.register('d3d_present', 'jobhelper_present_cb', function ()
+
+    local playerEntity = GetPlayerEntity();
+    if (playerEntity == nil) then
+        return 1;
+    end
+	
+	local party     = AshitaCore:GetMemoryManager():GetParty();
+	local zone = AshitaCore:GetResourceManager():GetString('zones', party:GetMemberZone(0))
+		
+	if zone == 'Eastern Adoulin' or
+	   zone == 'Western Adoulin' or
+	   zone == 'Southern San d\'Oria' or
+	   zone == 'Northern San d\'Oria' or
+	   zone == 'Port San d\Oria' or
+	   zone == 'Chateau d\'Oraguille' or
+	   zone == 'Bastok Mines' or
+	   zone == 'Bastok Markets' or
+	   zone == 'Port Bastok' or
+	   zone == 'Metalworks' or
+	   zone == 'Windurst Waters' or 
+	   zone == 'Windurst Walls' or
+	   zone == 'Port Windurst' or
+	   zone == 'Windurst Woods' or
+	   zone == 'Heavens Tower' or
+	   zone == 'Port Jeuno' or
+	   zone == 'Lower Jeuno' or
+	   zone == 'Upper Jeuno' or
+	   zone == 'Ru\'Lude Gardens' or
+	   zone == 'Tavnazian Safehold' or
+	   zone == 'Aht Urhgan Whitegate' or
+	   zone == 'Al Zahbi' or 
+	   zone == 'Selbina' or
+	   zone == 'Mhaura' or
+	   zone == 'Norg' or
+	   zone == 'Rabao' or
+	   zone == 'Nashmau' then
+	   return;
+	end
+	
+
     modules:each(function(module)
         if module.render ~= nil then
             module.render(runtime_config);
