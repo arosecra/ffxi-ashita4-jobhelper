@@ -66,6 +66,19 @@ ashita.events.register('command', 'jobhelper_command_cb', function (e)
 		local party     = AshitaCore:GetMemoryManager():GetParty();
 		local zone = AshitaCore:GetResourceManager():GetString('zones', party:GetMemberZone(0))
 		print(zone)
+	elseif args[2] == 'printbuffs' then
+		local status_list = AshitaCore:GetMemoryManager():GetPlayer():GetStatusIcons();
+		local status_timers = AshitaCore:GetMemoryManager():GetPlayer():GetStatusTimers();
+		for slot = 1, 32, 1 do
+			--print(status_list[slot])
+			if status_list[slot] ~= nil then
+				local buffid = status_list[slot]
+				local name = AshitaCore:GetResourceManager():GetString("buffs", buffid, 2)
+				if name ~= nil and name ~= '(None)' then
+					print(slot .. ' ' .. name .. ' ' .. buffid)
+				end
+			end
+		end
 	elseif module == nil then
         print('Module ' .. args[2] .. ' not found')
     else
@@ -76,6 +89,17 @@ ashita.events.register('command', 'jobhelper_command_cb', function (e)
 		end
     end 
 
+end);
+
+ashita.events.register('text_in', 'jobhelper_text_in_callback1', function (e)
+
+	if not e.injected then
+    modules:each(function(module)
+        if module.process_text ~= nil then
+            module.process_text(runtime_config, e);
+        end
+    end);
+	end
 end);
 
 ashita.events.register('packet_in', 'jobhelper_in_callback1', function (e)
@@ -103,7 +127,7 @@ ashita.events.register('d3d_present', 'jobhelper_present_cb', function ()
 	   zone == 'Western Adoulin' or
 	   zone == 'Southern San d\'Oria' or
 	   zone == 'Northern San d\'Oria' or
-	   zone == 'Port San d\Oria' or
+	   zone == 'Port San d\'Oria' or
 	   zone == 'Chateau d\'Oraguille' or
 	   zone == 'Bastok Mines' or
 	   zone == 'Bastok Markets' or
