@@ -39,9 +39,9 @@ end
 
 geo.command = function(config, args)
 	if (args[3] == 'setbubble') then
-		config.geo['bubble'] = args[4]
+		config.geo['bubble'] = args[4]:gsub("\"", "")
 	elseif (args[3] == 'setluopan') then
-		config.geo['luopan'] = args[4]
+		config.geo['luopan'] = args[4]:gsub("\"", "")
 	elseif (args[3] == 'bubble' and config.geo['bubble'] ~= nil) then
         if config.geo['bubble'] ~= nil then
 		    AshitaCore:GetChatManager():QueueCommand(1, "/ma \"" .. config.geo['bubble'] .. "\" <me>")

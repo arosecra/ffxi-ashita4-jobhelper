@@ -24,7 +24,7 @@ end
 cor.command = function(config, args)
 	if (args[3] == 'setroll') then
         local index = tonumber(args[4]);
-        local roll = args[4]:gsub("\"", "")
+        local roll = args[5]:gsub("\"", "")
         config.cor.rolls[index] = roll;
 	elseif (args[3] == 'roll') then
 		local index = tonumber(args[4])
@@ -62,7 +62,7 @@ cor.process_text = function(config, args)
 			
 			if lucky == value then
 				config.cor.current_roll.state = 5
-			elseif tonumber(value) > 6 then
+			elseif tonumber(value) > 5 then
 				config.cor.current_roll.state = 5
 			else
 				config.cor.current_roll.state = 3
