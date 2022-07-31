@@ -25,7 +25,7 @@ local prefixes = T{
     ['brd'] = require('job/brd'),
     ['cor'] = require('job/cor'),
     ['geo'] = require('job/geo'),
-    ['pld'] = require('job/pld'),
+--    ['pld'] = require('job/pld'),
     ['pup'] = require('job/pup'),
     ['sam'] = require('job/sam'),
     ['sch'] = require('job/sch'),
@@ -73,7 +73,7 @@ ashita.events.register('command', 'jobhelper_command_cb', function (e)
 			--print(status_list[slot])
 			if status_list[slot] ~= nil then
 				local buffid = status_list[slot]
-				local name = AshitaCore:GetResourceManager():GetString("buffs", buffid, 2)
+				local name = AshitaCore:GetResourceManager():GetString("buffs.names", buffid, 2)
 				if name ~= nil and name ~= '(None)' then
 					print(slot .. ' ' .. name .. ' ' .. buffid)
 				end
@@ -113,16 +113,44 @@ ashita.events.register('packet_in', 'jobhelper_in_callback1', function (e)
     end
 end);
 
-ashita.events.register('d3d_present', 'jobhelper_present_cb', function ()
-
-    local playerEntity = GetPlayerEntity();
-    if (playerEntity == nil) then
-        return 1;
+local can_act_status = function()
+	local result = true
+	local status_list = AshitaCore:GetDataManager():GetPlayer():GetStatusIcons()
+    for slot = 0, 31, 1 do
+		--print(status_list[slot])
+		if status_list[slot] == 0 then
+			result = false
+		end
+		if status_list[slot] == 2 then
+			result = false
+		end
+		if status_list[slot] == 6 then
+			result = false
+		end
+		if status_list[slot] == 7 then
+			result = false
+		end
+		if status_list[slot] == 10 then
+			result = false
+		end
+		if status_list[slot] == 14 then
+			result = false
+		end
+		if status_list[slot] == 16 then
+			result = false
+		end
+		if status_list[slot] == 17 then
+			result = false
+		end
+		if status_list[slot] == 28 then
+			result = false
+		end
     end
-	
-	local party     = AshitaCore:GetMemoryManager():GetParty();
-	local zone = AshitaCore:GetResourceManager():GetString('zones', party:GetMemberZone(0))
-		
+	return result
+end
+
+local can_act_zone = function() 
+	local result = true
 	if zone == 'Eastern Adoulin' or
 	   zone == 'Western Adoulin' or
 	   zone == 'Southern San d\'Oria' or
@@ -150,28 +178,45 @@ ashita.events.register('d3d_present', 'jobhelper_present_cb', function ()
 	   zone == 'Norg' or
 	   zone == 'Rabao' or
 	   zone == 'Nashmau' then
-	   return;
+	   result = false;
 	end
-	
+	return result
+end
 
-    modules:each(function(module)
-        if module.render ~= nil then
-            module.render(runtime_config);
-        end
+local can_act = function() 
+	return can_act_zone()
+end
+
+ashita.events.register('d3d_present', 'jobhelper_present_cb', function ()
+
+    local playerEntity = GetPlayerEntity();
+    if (playerEntity == nil) then
+        return 1;
+    end
+	
+	local party = AshitaCore:GetMemoryManager():GetParty();
+	local zone = AshitaCore:GetResourceManager():GetString('zones.names', party:GetMemberZone(0))
 		
-		local module_config = module.get_config(runtime_config);
-		if module_config.engaged ~= nil and 
-		   module_config.engaged == "true" then
-			if runtime_config.next_tic_time < os.time() then
-				if module_config.next_exec_time ~= nil and 
-				   module_config.next_exec_time < os.time() and 
-				   module.tic ~= nil then
-					local delay = module.tic(runtime_config)
-					module_config.next_exec_time = os.time() + delay
-				end				
-				
-				runtime_config.next_tic_time = os.time() + 1
-			end		
-		end
-    end);
+	if can_act() then
+		modules:each(function(module)
+			if module.render ~= nil then
+				module.render(runtime_config);
+			end
+			
+			local module_config = module.get_config(runtime_config);
+			if module_config.engaged ~= nil and 
+			   module_config.engaged == "true" then
+				if runtime_config.next_tic_time < os.time() then
+					if module_config.next_exec_time ~= nil and 
+					   module_config.next_exec_time < os.time() and 
+					   module.tic ~= nil then
+						local delay = module.tic(runtime_config)
+						module_config.next_exec_time = os.time() + delay
+					end				
+					
+					runtime_config.next_tic_time = os.time() + 1
+				end		
+			end
+		end);
+	end
 end);
